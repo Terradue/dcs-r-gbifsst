@@ -1,2 +1,5 @@
 export(GetGBIFOcc)
+export(GetGeoClusterOcc)
+import(fpc)
 import(rgbif)
+import(rgeos)
