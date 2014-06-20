@@ -1,0 +1,13 @@
+Package: rGBIFSST
+Type: Package
+Title: This package provides the functions to retrieve GBIF occurrences using
+    rgbif and accessing SST time-series data
+Version:
+    ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}
+Date: 2014-06-20
+Author: Terradue
+Description: More about what it does (maybe more than one line)
+License: Apache License, Version 2.0
+Depends:
+    RCurl,
+    bitops

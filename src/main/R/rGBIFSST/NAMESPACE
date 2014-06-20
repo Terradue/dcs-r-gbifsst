@@ -1,0 +1,2 @@
+export(GetGBIFOcc)
+import(rgbif)
