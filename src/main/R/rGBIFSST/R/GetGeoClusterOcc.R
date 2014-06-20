@@ -39,8 +39,8 @@ GetGeoClusterOcc <- function(occurrences, eps=5, minpts=20) {
       min(cl[,1]), min(cl[,2])))
   
     # get the cluster geospatial envelope
-    mbr[[i]] <- gEnvelope(SpatialPoints(coords))
-    
+    if (gArea(gEnvelope(SpatialPoints(coords)))>0) mbr[[length(mbr)+1]] <- gEnvelope(SpatialPoints(coords))
+	
   }
   
   return(mbr)
