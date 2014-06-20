@@ -24,7 +24,7 @@ GetGeoClusterOcc <- function(occurrences, eps=5, minpts=20) {
   for(i in 1:max(dbscan.res$cluster)) {
 
     # get the cluster 
-    cl <- (occurrences[ds$cluster %in% i,])
+    cl <- (occurrences[dbscan.res$cluster %in% i,])
   
     # create the matrix with the cluster minimum bounding box
     coords <- matrix(nrow=5, ncol=2, byrow=TRUE, data=c(
