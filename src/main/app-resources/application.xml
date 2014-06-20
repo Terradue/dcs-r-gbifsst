@@ -18,7 +18,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
       <streamingExecutable>/application/sst-plot/run.R</streamingExecutable>
       <defaultParameters>
         <parameter id="netcdf.variable">analysed_sst</parameter>
-        <parameter id="thredds"></parameter>
+        <parameter id="thredds">http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L4/GLOB/UKMO/OSTIA/catalog.xml</parameter>
         <parameter id="startdate" title="Start date of the time-series" abstract="Start date of the time-series" scope="runtime">2006-01-01</parameter>
         <parameter id="enddate" title="End date of the time-series" abstract="End date of the time-series" scope="runtime">2009-12-31</parameter>
       </defaultParameters>
