@@ -12,8 +12,6 @@ library("rgeos")
 # load the parametee values with rciop.getparam() function
 netcdf.variable <- rciop.getparam("netcdf.variable")
 thredds <- rciop.getparam("thredds")
-start.date <- rciop.getparam("startdate")
-end.date <- rciop.getparam("enddate")
 
 # add a log message
 rciop.log("DEBUG", paste("I'm running a job with parameter values:", netcdf.variable, thredds, start.date, end.date))
@@ -27,7 +25,7 @@ wcs.template$value[wcs.template$param == "format"] <- "NetCDF3"
 wcs.template$value[wcs.template$param == "coverage"] <- netcdf.variable
 
 # get URLs from thredds
-thredds.urls <- GetThreddsURL(thredds, start.date, end.date)
+thredds.urls <- GetThreddsURL(thredds)
 
 # read the inputs coming from stdin
 f <- file("stdin")
