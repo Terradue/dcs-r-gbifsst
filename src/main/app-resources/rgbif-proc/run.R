@@ -4,7 +4,10 @@ library(rciop)
 library(rgbif)
 library(stringr)
 library(fpc)
-library(rGBIFSST)
+#library(sp)
+
+# load the application package when mvn installed it
+library(rGBIFSST, lib.loc="/application/share/R/library")
 
 # get the species info
 species <- rciop.getparam("species")
@@ -15,13 +18,13 @@ minpts <- rciop.getparam("minpts")
 name <- str_split(species, pattern=":")[[1]][1]
 kingdom <- str_split(species, pattern=":")[[1]][2]
 
-rciop.log("INFO", paste("Get geo-spatial clusters for species", name, "of kingdom", kingdom)
+rciop.log("INFO", paste("Get geo-spatial clusters for species", name, "of kingdom", kingdom, "using eps:", eps, "minpts:", minpts))
 
 # get the occurrences from GBIF with rgbif
-occ <- rGBIFSST::GetGBIFOcc(name=name, kingdom=kingdom)
+occ <- as.data.frame(GetGBIFOcc(name=name, kingdom=kingdom))
 
 # get the minimum bounding boxes for each cluster detected by the DBSCAN algorithm 
-mbr <- rGBIFSST::GetGeoClusterOcc(occ, eps=eps, minpts=minpts)
+mbr <- GetGeoClusterOcc(occ, eps=eps, minpts=minpts)
 
 # mbr contains spatialPolygons, get them as xmin, ymin, xmax, ymax
 bbox <- unlist(lapply(X=mbr, function(x) {
@@ -33,8 +36,10 @@ bbox <- unlist(lapply(X=mbr, function(x) {
 }
 ))
 
+str(bbox)
+
 rciop.log("INFO", paste("Identified", length(bbox), "geo-spatial clusters"))
 
 # publish the minimum bounding boxes as inputs 
 # for the next processing step
-rciop.publish(path=cat(bbox, sep="\n"), mode="silent")
+rciop.publish(path=print(bbox), mode="silent")

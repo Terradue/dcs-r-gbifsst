@@ -6,8 +6,8 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
       <streamingExecutable>/application/rgbif-proc/run.R</streamingExecutable>
       <defaultParameters>
         <parameter id="species" title="Species" abstract="Species provided as species:kingdom" scope="runtime">Carcharodon carcharias:animalia</parameter>
-        <parameter id="eps" title="Reachability distance" abstract="Reachability distance for the DBSCAN algorithm" scope="runtime">5</parameter>-->
-        <parameter id="minpts" title="Reachability minimum no. of points" abstract="Reachability minimum no. of points for the DBSCAN algorithm" scope="runtime">20</parameter>
+        <parameter id="eps" title="Reachability distance" abstract="Reachability distance for the DBSCAN algorithm" scope="runtime">10</parameter>
+        <parameter id="minpts" title="Reachability minimum no. of points" abstract="Reachability minimum no. of points for the DBSCAN algorithm" scope="runtime">50</parameter>
       </defaultParameters>
       <defaultJobconf>
           <property id="mapred.task.timeout">6000000</property>
@@ -31,14 +31,14 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
     <node id="node-rgbif-proc">
       <job id="rgbif-proc"/>
       <sources>
-        <source refid="string:list"><source>
+        <source refid="string:list">null</source>
       </sources>
       <parameters/>
     </node>
     <node id="node-sst-plot">
       <job id="sst-plot"/>
       <sources>
-        <source refid="wf:node">node-rgbif-proc<source>
+        <source refid="wf:node">node-rgbif-proc</source>
       </sources>
       <parameters/>
     </node>

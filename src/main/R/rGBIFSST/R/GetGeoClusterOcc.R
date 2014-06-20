@@ -12,14 +12,18 @@
 #' @export
 #' @import fpc
 #' @import rgeos
+#' @import sp
 
 GetGeoClusterOcc <- function(occurrences, eps=5, minpts=20) {
+
+  occurrences <- cbind(occurrences$decimalLongitude, occurrences$decimalLatitude)
 
   mbr <- list()
   
   ### dbscan clustering 
   dbscan.res <- dbscan(occurrences, eps=eps, MinPts=minpts)
-
+  
+  print(dbscan.res)
   #extract the minimum bounding box for each cluster 
   for(i in 1:max(dbscan.res$cluster)) {
 
