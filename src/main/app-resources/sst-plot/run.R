@@ -26,6 +26,10 @@ wcs.template$value[wcs.template$param == "coverage"] <- netcdf.variable
 
 # get URLs from thredds
 #thredds.urls <- GetThreddsURL(thredds)
+url=c("http://data.nodc.noaa.gov/thredds/wcs/ghrsst/L4/GLOB/UKMO/OSTIA/2013/364/20131230-UKMO-L4HRfnd-GLOB-v01-fv02-OSTIA.nc.bz2", 
+  "http://data.nodc.noaa.gov/thredds/wcs/ghrsst/L4/GLOB/UKMO/OSTIA/2013/365/20131231-UKMO-L4HRfnd-GLOB-v01-fv02-OSTIA.nc.bz")
+  date=c("20131230", "20131231") 
+thredds.urls <- data.frame(url, date)
 
 # read the inputs coming from stdin
 f <- file("stdin")
