@@ -15,6 +15,8 @@ minpts <- rciop.getparam("minpts")
 name <- str_split(species, pattern=":")[[1]][1]
 kingdom <- str_split(species, pattern=":")[[1]][2]
 
+rciop.log("INFO", paste("Get geo-spatial clusters for species", name, "of kingdom", kingdom)
+
 # get the occurrences from GBIF with rgbif
 occ <- rGBIFSST::GetGBIFOcc(name=name, kingdom=kingdom)
 
@@ -30,6 +32,8 @@ bbox <- unlist(lapply(X=mbr, function(x) {
   return(paste(xmin, ymin, xmax, ymax, sep=","))
 }
 ))
+
+rciop.log("INFO", paste("Identified", length(bbox), "geo-spatial clusters"))
 
 # publish the minimum bounding boxes as inputs 
 # for the next processing step
