@@ -27,7 +27,7 @@ wcs.template$value[wcs.template$param == "format"] <- "NetCDF3"
 wcs.template$value[wcs.template$param == "coverage"] <- netcdf.variable
 
 # get URLs from thredds
-thredds.urls <- GetThreddsURL(thredds)
+thredds.urls <- GetThreddsURL(thredds, start.date, end.date)
 
 # read the inputs coming from stdin
 f <- file("stdin")
