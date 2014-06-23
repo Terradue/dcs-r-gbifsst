@@ -6,6 +6,8 @@
 #' @param Url the url eligibles to collect the dataset
 #' @examples \dontrun{
 #' GetThreddsURL("http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L4/GLOB/UKMO/OSTIA/catalog.xml") 
+#' GetThreddsURL("http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L4/GLOB/UKMO/OSTIA/")
+#' GetThreddsURL("http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L4/GLOB/UKMO/OSTIA") 
 #' }
 #'
 #' @export
@@ -18,6 +20,8 @@ GetThreddsURL<-function(Url)
      ## basic objects
      tCatalogue<-"thredds/catalog"
      tWcs<-"thredds/wcs"
+     xmlSubfix<-"catalog.xml"
+     
      listOfUrls<-list()  ## the output list of url
      index<-1            ## the list index
      
@@ -57,6 +61,9 @@ GetThreddsURL<-function(Url)
           }     
      }
      
+     tokens <- strsplit(Url,"/")[[1]]
+     if(tokens[length(tokens)]!=xmlSubfix)
+          Url<-paste(Url,xmlSubfix,sep="/")
      ## return the list of urls
      getUrl(Url)
      return(listOfUrls)
