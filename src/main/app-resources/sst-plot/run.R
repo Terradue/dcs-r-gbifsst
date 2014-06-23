@@ -55,8 +55,24 @@ while(length(bbox <- readLines(f, n=1)) > 0) {
   
   for (i in 1:length(thredds.urls)) {
   
+    attempt <- 1
+    r <- NULL
+  
     rciop.log("INFO", paste("url:", thredds.urls[[i]]))
-    r <- GetWCSCoverage(thredds.urls[[i]], wcs.template, by.ref=FALSE)
+    while ( is.null(r) && attempt <= 10 ) {
+      attempt <- attempt + 1
+      possible.error <- tryCatch(
+        r <- GetWCSCoverage(thredds.urls[[i]], wcs.template, by.ref=FALSE),
+          error=function(e) e
+        )
+  
+      if(inherits(possible.error, "error")) {
+        rciop.log("WARN","sleeping")
+        Sys.sleep(time=5)
+      }
+    }
+    
+    if (is.null(r)) next
     d <- r.stack <- c(r.stack, r)  
     
     # update the index
