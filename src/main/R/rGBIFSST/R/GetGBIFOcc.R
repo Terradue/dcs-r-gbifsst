@@ -15,9 +15,9 @@
 GetGBIFOcc <- function (name='Carcharodon carcharias', kingdom='animalia', limit=1000) {
 
   key <- name_backbone(name=name, kingdom=kingdom)$speciesKey
-  occ <- occ_search(taxonKey=key, limit=limit, return='data', hasCoordinate=TRUE)
+  occ <- occ_search(taxonKey=key, limit=limit, return='data')
   occ <- occ[complete.cases(occ),]
- 
+  occ <- cbind(occ$decimalLongitude, occ$decimalLatitude) 
   return(occ)
 
 }

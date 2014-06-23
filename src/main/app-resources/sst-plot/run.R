@@ -53,12 +53,14 @@ while(length(bbox <- readLines(f, n=1)) > 0) {
   r.stack <- c()
   idx <- c()
   
-  for (i in 1:length(thredds.urls)) {
+  for (i in 1:10) { #length(thredds.urls)) {
   
     attempt <- 1
     r <- NULL
   
     rciop.log("INFO", paste("url:", thredds.urls[[i]]))
+    
+    # attempt a few times, the WCS server can be busy
     while ( is.null(r) && attempt <= 10 ) {
       attempt <- attempt + 1
       possible.error <- tryCatch(
@@ -75,20 +77,25 @@ while(length(bbox <- readLines(f, n=1)) > 0) {
     if (is.null(r)) next
     d <- r.stack <- c(r.stack, r)  
     
-    # update the index
-    # the date is part of the URL path
+    # update the index breaking down the thredds path and extrating/formatting the date
+    # the date is part of the URL path and provided as Y-j
     path_split <- unlist(str_split(string=parse_url(thredds.urls[[i]])$path, pattern="/"))
-    rciop.log("DEBUG", paste("index:", path_split[8], path_split[9], sep="-"))
-    idx <- c(idx, paste(path_split[8], path_split[9], sep="-"))
+    rciop.log("INFO", strptime(paste(path_split[8], path_split[9], sep="-"), "%Y-%j"))
+    idx <- c(idx, as.character(strptime(paste(path_split[8], path_split[9], sep="-"), "%Y-%j")))
   }
   
   my.stack <- setZ(stack(r.stack), idx)
   names(my.stack) <- idx
   
   stack.mean <- cellStats(my.stack, 'mean')
-  names(stack.mean) <- idx
+  names(stack.mean) <- NULL
  
-  stack.list <- list(bbox=str_replace_all(bbox, "[![:cntrl:]]", "") , sstdaily=stack.mean) 
+  stack.list <- list(type="FeatureCollection", features=list(type="Feature", geometry=list(type="Polygon", extent=str_replace_all(bbox, "[![:cntrl:]]", "")) , 
+		properties=list(obsTypeDesc="Sea Surface Temperature", 
+				obsType="analysed_sst", 
+				uomType="kelvin",
+				time=idx, 
+				value=stack.mean)))
 
   
   json.file <- paste(tempfile(pattern = "file", tmpdir=TMPDIR), ".json", sep="")

@@ -16,7 +16,7 @@
 
 GetGeoClusterOcc <- function(occurrences, eps=5, minpts=20) {
 
-  occurrences <- cbind(occurrences$decimalLongitude, occurrences$decimalLatitude)
+  #occurrences <- cbind(occurrences$decimalLongitude, occurrences$decimalLatitude)
 
   mbr <- list()
   

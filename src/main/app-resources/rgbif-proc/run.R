@@ -10,19 +10,41 @@ library(rgdal)
 # load the application package where mvn installed it
 library(rGBIFSST, lib.loc="/application/share/R/library")
 
+setwd(TMPDIR)
+
 # get the species info
 species <- rciop.getparam("species")
-eps <- rciop.getparam("eps")
-minpts <- rciop.getparam("minpts")
+eps <- as.numeric(rciop.getparam("eps"))
+minpts <- as.numeric(rciop.getparam("minpts"))
 
 rciop.log("INFO", paste("Get geo-spatial clusters for species", species, "using eps:", eps, "minpts:", minpts))
 
 # get the occurrences from GBIF with rgbif
-occ <- as.data.frame(GetGBIFOcc(name=species))
+occ <- GetGBIFOcc(name=species)
 
 # get the minimum bounding boxes for each cluster detected by the DBSCAN algorithm 
 mbr <- GetGeoClusterOcc(occ, eps=eps, minpts=minpts)
 
+# create a spatial polygons data frame with the first mbr
+pol <- SpatialPolygonsDataFrame(mbr[[1]], data.frame(species=species))
+
+# add the remaining elements of mbr to the spatial polygons data frame
+for (n in 2:length(mbr)) {
+  temp.pol <- SpatialPolygonsDataFrame(mbr[[n]], data.frame(species=species))
+  pol <- rbind(pol, spChFIDs(temp.pol,as.character(n)))
+}
+
+# set the projection 
+proj4string(pol) <- CRS("+init=epsg:4326")
+    
+# write the geoJSON in the TMPDIR
+setwd(TMPDIR)
+writeOGR(pol, "cluster.geojson", "pol", driver='GeoJSON')
+
+# publish the geoJSON
+rciop.publish(paste(TMPDIR,  "cluster.geojson", sep="/"), metalink=TRUE)
+
+# prepare the output for the next node
 # mbr contains spatialPolygons, get them as xmin, ymin, xmax, ymax
 bbox <- unlist(lapply(X=mbr, function(x) {
   xmin <- x@bbox[1,1]
@@ -32,21 +54,6 @@ bbox <- unlist(lapply(X=mbr, function(x) {
   return(paste(xmin, ymin, xmax, ymax, sep=","))
 }
 ))
-
-# create a geoJSON 
-pol <- SpatialPolygonsDataFrame(mbr[[1]], data.frame(species=species))
-for (n in 2:length(mbr)) {
- temp.pol <- SpatialPolygonsDataFrame(mbr[[n]], data.frame(species=species))
- pol <- rbind(pol, spChFIDs(temp.pol,as.character(n)))  
-}
-proj4string(pol) <- CRS("+init=epsg:4326")
-
-# write the geoJSON
-setwd(TMPDIR)
-writeOGR(pol, "cluster.geojson", "pol", driver='GeoJSON')
-
-# publish the geoJSON
-rciop.publish(paste(TMPDIR,  "cluster.geojson", sep="/"), metalink=TRUE)
 
 rciop.log("INFO", paste("Identified", length(bbox), "geo-spatial clusters"))
 
