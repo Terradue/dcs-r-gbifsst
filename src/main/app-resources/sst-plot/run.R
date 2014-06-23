@@ -53,7 +53,7 @@ while(length(bbox <- readLines(f, n=1)) > 0) {
   r.stack <- c()
   idx <- c()
   
-  for (i in 1:10) { #length(thredds.urls)) {
+  for (i in 1:length(thredds.urls)) {
   
     attempt <- 1
     r <- NULL
