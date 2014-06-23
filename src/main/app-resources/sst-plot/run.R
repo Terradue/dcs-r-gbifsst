@@ -31,13 +31,6 @@ wcs.template$value[wcs.template$param == "coverage"] <- netcdf.variable
 # get URLs from thredds
 thredds.urls <- GetThreddsURL(thredds)
 
-# unit test
-#url=c("http://data.nodc.noaa.gov/thredds/wcs/ghrsst/L4/GLOB/UKMO/OSTIA/2013/364/20131230-UKMO-L4HRfnd-GLOB-v01-fv02-OSTIA.nc.bz2", 
-#  "http://data.nodc.noaa.gov/thredds/wcs/ghrsst/L4/GLOB/UKMO/OSTIA/2013/365/20131231-UKMO-L4HRfnd-GLOB-v01-fv02-OSTIA.nc.bz2")
-#  date=c("20131230", "20131231") 
-
-#thredds.urls <- data.frame(url, date, stringsAsFactors=FALSE)
-
 # read the inputs coming from stdin
 f <- file("stdin")
 open(f)
@@ -46,14 +39,14 @@ while(length(bbox <- readLines(f, n=1)) > 0) {
   
   rciop.log("INFO", paste("processing bbox", bbox))
   
-  rciop.log("DEBUG", paste("escaped", str_replace_all(bbox, "[![:cntrl:]]", ""), "aaa", sep="")) 
+  bbox <- str_replace_all(bbox, "[![:cntrl:]]", "")
 
-  wcs.template$value[wcs.template$param == "bbox"] <- str_replace_all(bbox, "[![:cntrl:]]", "")
+  wcs.template$value[wcs.template$param == "bbox"] <- bbox
   
   r.stack <- c()
   idx <- c()
   
-  for (i in 1:length(thredds.urls)) {
+  for (i in 1:5) { #length(thredds.urls)) {
   
     attempt <- 1
     r <- NULL
@@ -89,8 +82,12 @@ while(length(bbox <- readLines(f, n=1)) > 0) {
   
   stack.mean <- cellStats(my.stack, 'mean')
   names(stack.mean) <- NULL
+
+  # convert bbox to numeric vector and create a matrix with the coordinates
+  bbox <- as.numeric(unlist(str_split(bbox, pattern=",")))
+  coord <- list(matrix(c(bbox[1], bbox[2], bbox[1], bbox[4], bbox[3], bbox[4], bbox[3], bbox[2], bbox[1], bbox[2]), nrow=5, ncol=2, byrow=TRUE))
  
-  stack.list <- list(type="FeatureCollection", features=list(type="Feature", geometry=list(type="Polygon", extent=str_replace_all(bbox, "[![:cntrl:]]", "")) , 
+  stack.list <- list(type="FeatureCollection", features=list(type="Feature", geometry=list(type="Polygon", coordinates=coord) , 
 		properties=list(obsTypeDesc="Sea Surface Temperature", 
 				obsType="analysed_sst", 
 				uomType="kelvin",
