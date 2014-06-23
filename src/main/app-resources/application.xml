@@ -5,7 +5,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
     <jobTemplate id="rgbif-proc">
       <streamingExecutable>/application/rgbif-proc/run.R</streamingExecutable>
       <defaultParameters>
-        <parameter id="species" title="Species" abstract="Species provided as species:kingdom" scope="runtime">Carcharodon carcharias:animalia</parameter>
+        <parameter id="species" title="Species" abstract="Species" scope="runtime">Carcharodon carcharias</parameter>
         <parameter id="eps" title="Reachability distance" abstract="Reachability distance for the DBSCAN algorithm" scope="runtime">10</parameter>
         <parameter id="minpts" title="Reachability minimum no. of points" abstract="Reachability minimum no. of points for the DBSCAN algorithm" scope="runtime">50</parameter>
       </defaultParameters>
