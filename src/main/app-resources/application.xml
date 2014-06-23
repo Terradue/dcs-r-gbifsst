@@ -18,7 +18,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
       <streamingExecutable>/application/sst-plot/run.R</streamingExecutable>
       <defaultParameters>
         <parameter id="netcdf.variable" title="Variable in netCDF" abstract="Provide the variable name" scope="runtime">analysed_sst</parameter>
-        <parameter id="thredds" title="THREDDS access point" abstract="XML" scope="runtime">http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L4/GLOB/UKMO/OSTIA/catalog.xml</parameter>
+        <parameter id="thredds" title="THREDDS access point" abstract="XML" scope="runtime">http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L4/GLOB/UKMO/OSTIA/2014/catalog.xml</parameter>
       </defaultParameters>
       <defaultJobconf>
           <property id="mapred.task.timeout">6000000</property>
