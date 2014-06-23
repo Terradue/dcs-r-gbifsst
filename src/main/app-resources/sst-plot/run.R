@@ -4,6 +4,8 @@
 library("rciop")
 library("stringr")
 library("raster")
+library("httr")
+library("RJSONIO")
 
 # load the application package when mvn installed it
 library(rGBIFSST, lib.loc="/application/share/R/library")
@@ -51,13 +53,17 @@ while(length(bbox <- readLines(f, n=1)) > 0) {
   r.stack <- c()
   idx <- c()
   
-  for (i in 1:nrow(thredds.urls)) {
+  for (i in 1:length(thredds.urls)) {
   
-    r <- GetWCSCoverage(thredds.urls[i, "url"], wcs.template, by.ref=FALSE)
+    rciop.log("INFO", paste("url:", thredds.urls[[i]]))
+    r <- GetWCSCoverage(thredds.urls[[i]], wcs.template, by.ref=FALSE)
     d <- r.stack <- c(r.stack, r)  
     
     # update the index
-    idx <- c(idx, thredds.urls[i, "date"])
+    # the date is part of the URL path
+    path_split <- unlist(str_split(string=parse_url(thredds.urls[[i]])$path, pattern="/"))
+    rciop.log("DEBUG", paste("index:", path_split[8], path_split[9], sep="-"))
+    idx <- c(idx, paste(path_split[8], path_split[9], sep="-"))
   }
   
   my.stack <- setZ(stack(r.stack), idx)
@@ -65,10 +71,14 @@ while(length(bbox <- readLines(f, n=1)) > 0) {
   
   stack.mean <- cellStats(my.stack, 'mean')
   names(stack.mean) <- idx
-  
-  print(stack.mean)
+ 
+  stack.list <- list(bbox=str_replace_all(bbox, "[![:cntrl:]]", "") , sstdaily=stack.mean) 
 
-  # publish the any results done 
-  rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=FALSE)
+  
+  json.file <- paste(tempfile(pattern = "file", tmpdir=TMPDIR), ".json", sep="")
+  writeLines(toJSON(stack.list, pretty=TRUE), json.file)
+  
+  # publish the json file generated 
+  rciop.publish(json.file, recursive=FALSE, metalink=TRUE)
  
 }
