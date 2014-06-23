@@ -21,11 +21,11 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
         <parameter id="thredds" title="THREDDS access point" abstract="XML" scope="runtime">http://data.nodc.noaa.gov/thredds/catalog/ghrsst/L4/GLOB/UKMO/OSTIA/2014/catalog.xml</parameter>
       </defaultParameters>
       <defaultJobconf>
-          <property id="mapred.task.timeout">6000000</property>
+          <property id="mapred.task.timeout">600000000</property>
       </defaultJobconf>
     </jobTemplate>
   </jobTemplates>
-  <workflow id="myworkflow" title="My workflow" abstract="This is my wrokflow">
+  <workflow id="myworkflow" title="My workflow" abstract="This is my workflow">
     <workflowVersion>1.0</workflowVersion>
     <node id="node-rgbif-proc">
       <job id="rgbif-proc"/>
